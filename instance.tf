@@ -76,6 +76,6 @@ resource "aws_security_group" "private" {
     }
 
     tags = {
-      Name = "${var.env_code}-publicSG"
+      Name = "${var.env_code}-privateSG"
     }
   }
