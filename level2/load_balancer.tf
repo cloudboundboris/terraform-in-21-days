@@ -1,5 +1,5 @@
 resource "aws_security_group" "load_balancer" {
-  name        = "${var.env_code}-LB"
+  name        = "${var.env_code}-SG"
   description = "Allow port 80 TCP inbound to ELB"
   vpc_id      = data.terraform_remote_state.level1.outputs.vpc_id
 
@@ -24,7 +24,7 @@ resource "aws_security_group" "load_balancer" {
 }
 
 resource "aws_lb" "main" {
-  name               = var.env_code
+  name               = "${var.env_code}-LB"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.load_balancer.id]
@@ -36,7 +36,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_lb_target_group" "main" {
-  name     = var.env_code
+  name     = "${var.env_code}-TG"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.level1.outputs.vpc_id
@@ -55,8 +55,9 @@ resource "aws_lb_target_group" "main" {
 }
 
 resource "aws_lb_target_group_attachment" "name" {
+  count = 2
   target_group_arn = aws_lb_target_group.main.arn
-  target_id        = aws_instance.private.id
+  target_id        = aws_instance.private[count.index].id
   port             = 80
 }
 
@@ -72,3 +73,4 @@ resource "aws_lb_listener" "main" {
   }
 
 }
+
