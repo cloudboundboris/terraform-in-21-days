@@ -36,7 +36,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_lb_target_group" "main" {
-  name     = "${var.env_code}-TG"
+  name     = "${var.env_code}-TargetGroup"
   port     = 80
   protocol = "HTTP"
   vpc_id   = data.terraform_remote_state.level1.outputs.vpc_id
