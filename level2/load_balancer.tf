@@ -60,7 +60,7 @@ resource "aws_lb_listener" "main" {
   protocol          = "HTTP"
 
   default_action {
-    type                    = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.main.arn
 
   }

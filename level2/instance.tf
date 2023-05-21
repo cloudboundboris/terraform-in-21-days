@@ -23,14 +23,17 @@ resource "aws_security_group" "private" {
   description = "Allow SSH from VPC"
   vpc_id      = data.terraform_remote_state.level1.outputs.vpc_id
 
+  # (No longer needed since we are implementing SSM) 
+  # ingress {
+  #   description = "SSH from VPC"
+  #   from_port   = 22
+  #   to_port     = 22
+  #   protocol    = "tcp"
+  #   cidr_blocks = [data.terraform_remote_state.level1.outputs.vpc_cidr] #Using datasource "Pulling from level1" 
+  # }
+
+
   ingress {
-    description = "SSH from VPC"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [data.terraform_remote_state.level1.outputs.vpc_cidr] #Using datasource "Pulling from level1" 
-  }
-   ingress {
     description     = "HTTP from LB"
     from_port       = 80
     to_port         = 80
@@ -56,7 +59,8 @@ resource "aws_launch_configuration" "main" {
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.private.id]
   user_data       = file("user-data.sh")
-  key_name        = "mainkeypair" 
+  # key_name        = "mainkeypair"  (No longer needed since we are implementing SSM) 
+  iam_instance_profile = aws_iam_instance_profile.main.name
 }
 
 resource "aws_autoscaling_group" "main" {
