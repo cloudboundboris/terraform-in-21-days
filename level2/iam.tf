@@ -25,9 +25,3 @@ resource "aws_iam_instance_profile" "main" {
   name = "${var.env_code}-iam_profile"
   role = aws_iam_role.main.name
 }
-
-
-
-
-
-
